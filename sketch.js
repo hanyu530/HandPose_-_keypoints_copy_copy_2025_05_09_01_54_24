@@ -45,37 +45,57 @@ function draw() {
   if (hands.length > 0) {
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
-        // 獲取食指和大拇指的座標
-        let indexFinger = hand.keypoints[8];
-        let thumb = hand.keypoints[4];
+        // 繪製手指的線條
+        stroke(0, 255, 0); // 綠色線條
+        strokeWeight(2);
 
-        // 計算食指與圓心的距離
-        let dIndex = dist(indexFinger.x, indexFinger.y, circleX, circleY);
-
-        // 計算大拇指與圓心的距離
-        let dThumb = dist(thumb.x, thumb.y, circleX, circleY);
-
-        // 如果食指和大拇指同時碰觸到圓的邊緣
-        if (dIndex < circleRadius && dThumb < circleRadius) {
-          // 計算兩點的中點，作為圓的新位置
-          circleX = (indexFinger.x + thumb.x) / 2;
-          circleY = (indexFinger.y + thumb.y) / 2;
-
-          // 繪製食指與大拇指之間的線條
-          stroke(0, 255, 0); // 綠色線條
-          strokeWeight(2);
-          line(indexFinger.x, indexFinger.y, thumb.x, thumb.y);
+        // Connect keypoints 0-4
+        for (let i = 0; i < 4; i++) {
+          line(
+            hand.keypoints[i].x, hand.keypoints[i].y,
+            hand.keypoints[i + 1].x, hand.keypoints[i + 1].y
+          );
         }
 
-        // 繪製食指的點
-        fill(255, 0, 0); // 紅色
-        noStroke();
-        circle(indexFinger.x, indexFinger.y, 16);
+        // Connect keypoints 5-8
+        for (let i = 5; i < 8; i++) {
+          line(
+            hand.keypoints[i].x, hand.keypoints[i].y,
+            hand.keypoints[i + 1].x, hand.keypoints[i + 1].y
+          );
+        }
 
-        // 繪製大拇指的點
-        fill(0, 255, 0); // 綠色
-        noStroke();
-        circle(thumb.x, thumb.y, 16);
+        // Connect keypoints 9-12
+        for (let i = 9; i < 12; i++) {
+          line(
+            hand.keypoints[i].x, hand.keypoints[i].y,
+            hand.keypoints[i + 1].x, hand.keypoints[i + 1].y
+          );
+        }
+
+        // Connect keypoints 13-16
+        for (let i = 13; i < 16; i++) {
+          line(
+            hand.keypoints[i].x, hand.keypoints[i].y,
+            hand.keypoints[i + 1].x, hand.keypoints[i + 1].y
+          );
+        }
+
+        // Connect keypoints 17-20
+        for (let i = 17; i < 20; i++) {
+          line(
+            hand.keypoints[i].x, hand.keypoints[i].y,
+            hand.keypoints[i + 1].x, hand.keypoints[i + 1].y
+          );
+        }
+
+        // 繪製手指的點
+        for (let i = 0; i < hand.keypoints.length; i++) {
+          let keypoint = hand.keypoints[i];
+          fill(255, 0, 0); // 紅色
+          noStroke();
+          circle(keypoint.x, keypoint.y, 8);
+        }
       }
     }
   }
