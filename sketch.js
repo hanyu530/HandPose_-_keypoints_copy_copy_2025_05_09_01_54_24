@@ -60,6 +60,11 @@ function draw() {
           // 計算兩點的中點，作為圓的新位置
           circleX = (indexFinger.x + thumb.x) / 2;
           circleY = (indexFinger.y + thumb.y) / 2;
+
+          // 繪製食指與大拇指之間的線條
+          stroke(0, 255, 0); // 綠色線條
+          strokeWeight(2);
+          line(indexFinger.x, indexFinger.y, thumb.x, thumb.y);
         }
 
         // 繪製食指的點
