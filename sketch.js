@@ -41,27 +41,12 @@ function draw() {
   noStroke();
   ellipse(circleX, circleY, circleRadius * 2);
 
-  // Ensure at least one hand is detected
+  // 確保至少檢測到一隻手
   if (hands.length > 0) {
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
-        // Draw keypoints as circles
-        for (let i = 0; i < hand.keypoints.length; i++) {
-          let keypoint = hand.keypoints[i];
-
-          // Color-code based on left or right hand
-          if (hand.handedness == "Left") {
-            fill(255, 0, 255);
-          } else {
-            fill(255, 255, 0);
-          }
-
-          noStroke();
-          circle(keypoint.x, keypoint.y, 16);
-        }
-
-        // Draw lines connecting keypoints
-        stroke(0, 255, 0); // Set line color
+        // 繪製手指的線條
+        stroke(0, 255, 0); // 綠色線條
         strokeWeight(2);
 
         // Connect keypoints 0-4
