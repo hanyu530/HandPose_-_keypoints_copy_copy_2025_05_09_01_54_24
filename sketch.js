@@ -6,6 +6,7 @@ let handPose;
 let hands = [];
 let circleX, circleY; // 圓的初始位置
 let circleRadius = 50; // 圓的半徑
+let trail = []; // 用於存儲圓的移動軌跡
 
 function preload() {
   // Initialize HandPose model with flipped video input
@@ -36,30 +37,59 @@ function setup() {
 function draw() {
   image(video, 0, 0);
 
+  // 繪製圓的移動軌跡
+  noFill();
+  stroke(0, 255, 0); // 綠色線條
+  strokeWeight(2);
+  beginShape();
+  for (let pos of trail) {
+    vertex(pos.x, pos.y);
+  }
+  endShape();
+
   // 繪製圓
   fill(0, 0, 255, 150); // 半透明藍色
   noStroke();
   ellipse(circleX, circleY, circleRadius * 2);
 
-  // Ensure at least one hand is detected
+  // 確保至少檢測到一隻手
   if (hands.length > 0) {
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
-        // 獲取食指的座標 (keypoint 8)
+        // 獲取食指和大拇指的座標
         let indexFinger = hand.keypoints[8];
+        let thumb = hand.keypoints[4];
 
-        // 檢查食指是否碰觸到圓
-        let d = dist(indexFinger.x, indexFinger.y, circleX, circleY);
-        if (d < circleRadius) {
-          // 如果碰觸到，將圓移動到食指的位置
-          circleX = indexFinger.x;
-          circleY = indexFinger.y;
+        // 計算食指與圓心的距離
+        let dIndex = dist(indexFinger.x, indexFinger.y, circleX, circleY);
+
+        // 計算大拇指與圓心的距離
+        let dThumb = dist(thumb.x, thumb.y, circleX, circleY);
+
+        // 如果食指和大拇指同時碰觸到圓的邊緣
+        if (dIndex < circleRadius && dThumb < circleRadius) {
+          // 計算兩點的中點，作為圓的新位置
+          circleX = (indexFinger.x + thumb.x) / 2;
+          circleY = (indexFinger.y + thumb.y) / 2;
+
+          // 將新位置加入軌跡
+          trail.push({ x: circleX, y: circleY });
+
+          // 限制軌跡長度
+          if (trail.length > 50) {
+            trail.shift();
+          }
         }
 
         // 繪製食指的點
         fill(255, 0, 0); // 紅色
         noStroke();
         circle(indexFinger.x, indexFinger.y, 16);
+
+        // 繪製大拇指的點
+        fill(0, 255, 0); // 綠色
+        noStroke();
+        circle(thumb.x, thumb.y, 16);
 
         // Draw keypoints as circles
         for (let i = 0; i < hand.keypoints.length; i++) {
